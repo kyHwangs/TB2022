@@ -5,7 +5,6 @@ Repository for GEANT4 simulation &amp; analysis of the dual-readout calorimeter 
 ### Compile
 After fetching the repository, do
     
-    mkdir install build
     cp envset.sh ./install
     cd install
     source envset.sh

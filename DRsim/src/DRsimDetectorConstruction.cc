@@ -59,7 +59,7 @@ DRsimDetectorConstruction::DRsimDetectorConstruction()
   core_S_Dphi = 2.*M_PI;
   PMTT = 0.3*mm;
   filterT = 0.01*mm;
-  reflectorT = 0.3*mm;
+  reflectorT = 0.03*mm;
 
   fVisAttrOrange = new G4VisAttributes(G4Colour(1.0,0.5,0.,1.0));
   fVisAttrOrange->SetVisibility(true);
@@ -131,11 +131,12 @@ void DRsimDetectorConstruction::ConstructSDandField() {
   G4String SiPMName = "SiPMSD";
 
   // ! Not a memory leak - SDs are deleted by G4SDManager. Deleting them manually will cause double delete!
-
-  for (int i = 0; i < fNofModules; i++) {
-    DRsimSiPMSD* SiPMSDmodule = new DRsimSiPMSD("Module"+std::to_string(i+1), "ModuleC"+std::to_string(i+1), fModuleProp.at(i));
-    SDman->AddNewDetector(SiPMSDmodule);
-    PMTcathLogical[i]->SetSensitiveDetector(SiPMSDmodule);
+  if ( doPMT ) {
+    for (int i = 0; i < fNofModules; i++) {
+      DRsimSiPMSD* SiPMSDmodule = new DRsimSiPMSD("Module"+std::to_string(i+1), "ModuleC"+std::to_string(i+1), fModuleProp.at(i));
+      SDman->AddNewDetector(SiPMSDmodule);
+      PMTcathLogical[i]->SetSensitiveDetector(SiPMSDmodule);
+    }
   }
 }
 
@@ -145,13 +146,12 @@ void DRsimDetectorConstruction::ModuleBuild(G4LogicalVolume* ModuleLogical_[],
                                             std::vector<G4LogicalVolume*> fiberUnitIntersection_[], std::vector<G4LogicalVolume*> fiberCladIntersection_[], std::vector<G4LogicalVolume*> fiberCoreIntersection_[], 
                                             std::vector<DRsimInterface::DRsimModuleProperty>& ModuleProp_) {
 
-  for (int i = 0; i < 2; i++) {
-    moduleName = setModuleName(i);
+  for (int i = 0; i < fNofModules; i++) {
+    moduleName = setModuleName(i+1);
     
     dimCalc->SetisModule(true);
     module = new G4Box("Mudule", (fModuleH/2.) *mm, (fModuleW/2.) *mm, (fTowerDepth/2.) *mm );
     ModuleLogical_[i] = new G4LogicalVolume(module,FindMaterial("Copper"),moduleName);
-    // G4VPhysicalVolume* modulePhysical = new G4PVPlacement(0,dimCalc->GetOrigin(i),ModuleLogical_[i],moduleName,worldLogical,false,0,checkOverlaps);
     new G4PVPlacement(0,dimCalc->GetOrigin(i),ModuleLogical_[i],moduleName,worldLogical,false,0,checkOverlaps);
 
     if ( doPMT ) {
@@ -165,7 +165,7 @@ void DRsimDetectorConstruction::ModuleBuild(G4LogicalVolume* ModuleLogical_[],
 
     DRsimInterface::DRsimModuleProperty ModulePropSingle;
     ModulePropSingle.towerXY   = fTowerXY;
-    ModulePropSingle.ModuleNum = i;
+    ModulePropSingle.ModuleNum = i+1;
     ModuleProp_.push_back(ModulePropSingle);
 
     if ( doPMT ) {
