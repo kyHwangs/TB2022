@@ -87,10 +87,8 @@ void DRsimPrimaryGeneratorAction::GeneratePrimaries(G4Event* event) {
     return;
   }
 
-  // G4double x = (G4UniformRand()-0.5)*fRandX + fX_0;
-  // G4double y = (G4UniformRand()-0.5)*fRandY + fY_0;
-  G4double x = fX_0;
-  G4double y = fY_0;
+  G4double x = (G4UniformRand()-0.5)*fRandX + fX_0;
+  G4double y = (G4UniformRand()-0.5)*fRandY + fY_0;
   G4double z = 0;
   fOrg.set(x,y,z);
 
