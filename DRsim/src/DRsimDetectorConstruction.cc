@@ -104,7 +104,7 @@ G4VPhysicalVolume* DRsimDetectorConstruction::Construct() {
   fFiberUnitH = 1.1;
   fRandomSeed = 1;
 
-  doFiber     = false;
+  doFiber     = true;
   doReflector = true;
   doPMT       = true;
 
